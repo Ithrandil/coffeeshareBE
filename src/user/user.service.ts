@@ -9,48 +9,79 @@ import { UserRepository } from './user.repository';
 export class UserService {
     constructor(private readonly userRepo: UserRepository){}
 
-  // *****************************
-  // Check if the user exist in MYSQL DB
-  // *****************************
+  /**
+   * @description Check if the user exist in the DB
+   * @param email of type string taken from the user
+   * @returns An observable of a boolean
+   */
   verifyUserNotExistByEmail(email: string): Observable<boolean> {
     return this.userRepo.findUserByEmail(email).pipe(
         switchMap(user => {
-            if (user) return of(false);
-            else return of(true);
-        })
-    )
+            if (user) { return of(false);} else {
+            return of(true);}
+        }),
+    );
   }
 
-  // *****************************
-  // Creation of a user in into MYSQL DB
-  // *****************************
+  /**
+   * @description Check of existence of the user by his email then if not create it in the DB
+   * @param newUser of type User
+   * @returns An observable of a User or an observable of string if the user already exists
+   */
   createUser(newUser: User): Observable<User | string> {
     return this.verifyUserNotExistByEmail(newUser.email).pipe(
         switchMap((notexist) => {
-            if (notexist) return this.userRepo.createUser(newUser);
-            else return of('This mail is already used');
-        })
-    )
+            if (notexist) {return this.userRepo.createUser(newUser);} else {
+            return of('This mail is already used');}
+        }),
+    );
   }
 
-    getAllUsers(): Observable<UserDto[]> {
-        return;
+  /**
+   * @description Get all users on the DB
+   * @returns An observable of an array of Users
+   */
+    getAllUsers(): Observable<User[]> {
+        return this.userRepo.findAll();
     }
 
-    getUserById(userId: number): Observable<UserDto> {
-        return;
+    /**
+     * @description Get a specific user by his UUID in the DB
+     * @param userId of type string
+     * @returns An observable of a User
+     */
+    getUserById(userId: string): Observable<User> {
+        return this.userRepo.findUserById(userId);
     }
 
-    updateUser(updatedUser: User, userId: number): string {
-        return;
+    // TODO: NEED TO TEST TO UNDERSTAND WHAT COMES BACK WITH TYPEORM AND REMOVE THE ANY TYPE
+    /**
+     * @description Update the user in the DB with his UUID
+     * @param updatedUser of type User
+     * @param userId of type string
+     * @returns ???????
+     */
+    updateUser(updatedUser: User, userId: string): Observable<any> {
+        return this.userRepo.updateUser(userId, updatedUser);
     }
 
-    deleteUser(userId: number): string {
-        return;
+    // TODO: NEED TO TEST TO UNDERSTAND WHAT COMES BACK WITH TYPEORM AND REMOVE THE ANY TYPE
+    /**
+     * @description Delete a user in the DB by his UUID
+     * @param userId of type string
+     * @returns ????????
+     */
+    deleteUser(userId: string): Observable<any> {
+        return this.userRepo.deleteUser(userId);
     }
 
-    findOneByEmail(email: string): User {
-        return;
+    /**
+     * @description Get a user by his email in the DB
+     * @param email of type string
+     * @returns An observable of type User
+     */
+    findOneByEmail(email: string): Observable<User> {
+        return this.userRepo.findUserByEmail(email);
     }
 
 }

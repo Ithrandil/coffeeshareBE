@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Param, Body, Post, Delete } from '@nestjs/common';
+import { Controller, Get, Put, Param, Body, Post, Delete, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { Observable } from 'rxjs';
@@ -10,37 +10,39 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    // TODO: Implement UserDTO for the return to the client instead of a User
+
     // @UseGuards(AuthGuard())
-    @ApiOperation({title: 'Get all users'})
     @Get()
+    @ApiOperation({title: 'Get all users'})
     getAllUsers(): Observable<UserDto[]> {
         return this.userService.getAllUsers();
     }
 
     // @UseGuards(AuthGuard())
-    @ApiOperation({title: 'Get of a specific user with his UUID'})
     @Get(':id')
-    getById(@Param() id): Observable<UserDto> {
+    @ApiOperation({title: 'Get of a specific user with his UUID'})
+    getById(@Param() id: string): Observable<UserDto> {
         return this.userService.getUserById(id);
     }
 
-    // @UseGuards(AuthGuard())
-    @ApiOperation({title: 'User update'})
-    @Put(':id')
-    updateUser(@Body() updatedUser: User, @Param() id): string {
-        return this.userService.updateUser(updatedUser, id);
-    }
-
-    @ApiOperation({title: 'User creation'})
     @Post()
+    @ApiOperation({title: 'User creation'})
     createUser(@Body() newUser: User): Observable<string | User> {
         return this.userService.createUser(newUser);
     }
 
     // @UseGuards(AuthGuard())
-    @ApiOperation({title: 'User deletion'})
+    @Patch(':id')
+    @ApiOperation({title: 'User update'})
+    updateUser(@Body() updatedUser: User, @Param() id: string): Observable<string> {
+        return this.userService.updateUser(updatedUser, id);
+    }
+
+    // @UseGuards(AuthGuard())
     @Delete(':id')
-    deleteUser(@Param() id): string {
+    @ApiOperation({title: 'User deletion'})
+    deleteUser(@Param() id): Observable<any> {
             return this.userService.deleteUser(id);
     }
 }
