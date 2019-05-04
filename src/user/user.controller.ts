@@ -4,7 +4,7 @@ import { User } from './user.entity';
 import { Observable } from 'rxjs';
 import { UserDto } from './user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -26,8 +26,8 @@ export class UserController {
         return this.userService.updateUser(updatedUser, params.id);
     }
 
-    @Post('create')
-    createUser(@Body() newUser: User): string {
+    @Post()
+    createUser(@Body() newUser: User): Observable<string | User> {
         return this.userService.createUser(newUser);
     }
 
