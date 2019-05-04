@@ -2,9 +2,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./user.entity";
 import { Repository } from "typeorm";
 import { Observable, from, throwError } from "rxjs";
-import { UserDto } from "./user.dto";
+import { UserDto } from "./dto/user.dto";
 import { catchError } from "rxjs/operators";
 import { error } from "util";
+import { CreateUserDto } from "./dto/create-user.dto";
 
 export class UserRepository {
 
@@ -16,7 +17,7 @@ export class UserRepository {
         return from(this.userRepo.find());
       }
 
-    createUser(user: UserDto): Observable<User> {
+    createUser(user: CreateUserDto): Observable<any> {
         return from(this.userRepo.save(user));
     }
 

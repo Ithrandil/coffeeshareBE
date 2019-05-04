@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { UserDto } from './user.dto';
+import { UserDto } from './dto/user.dto';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepo: UserRepository){}
+    constructor(private readonly userRepo: UserRepository) {}
 
   /**
    * @description Check if the user exist in the DB
@@ -28,10 +29,11 @@ export class UserService {
    * @param newUser of type User
    * @returns An observable of a User or an observable of string if the user already exists
    */
-  createUser(newUser: User): Observable<User | string> {
+  createUser(newUser: CreateUserDto): Observable<User | string> {
     return this.verifyUserNotExistByEmail(newUser.email).pipe(
-        switchMap((notexist) => {
-            if (notexist) {return this.userRepo.createUser(newUser);} else {
+        switchMap((doNotExist) => {
+            if (doNotExist) {
+                return this.userRepo.createUser(newUser); } else {
             return of('This mail is already used');}
         }),
     );
