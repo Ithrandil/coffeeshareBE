@@ -22,7 +22,6 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @UseGuards(AuthGuard())
   @Get()
   @ApiOperation({ title: 'Get all users' })
   @ApiOkResponse({ description: 'Successful operation', type: [UserDto, UserDto] })
@@ -30,15 +29,14 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
-  // @UseGuards(AuthGuard())
   @Get(':id')
   @ApiOperation({ title: 'Get of a specific user with his UUID' })
   @ApiImplicitParam({ name: 'id', description: `User's UUID`, required: true, type: 'string' })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiBadRequestResponse({
-    description: 'There is no user with this uuid in our database',
+    description: 'There is no user with this UUID in our database',
   })
-  getById(@Param() id: string): Observable<User | string> {
+  getById(@Param() id: string): Observable<User> {
     return this.userService.getUserById(id);
   }
 
@@ -46,33 +44,31 @@ export class UserController {
   @ApiOperation({ title: 'User creation' })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiBadRequestResponse({
-    description: 'This mail is already used',
+    description: 'A user with this email already exists',
   })
-  createUser(@Body() newUser: CreateUserDto): Observable<string | UserDto> {
+  createUser(@Body() newUser: CreateUserDto): Observable<UserDto> {
     return this.userService.createUser(newUser);
   }
 
-  // @UseGuards(AuthGuard())
   @Patch(':id')
   @ApiOperation({ title: 'User update' })
   @ApiImplicitParam({ name: 'id', description: `User's UUID`, required: true, type: 'string' })
   @ApiOkResponse({ description: 'Successful operation', type: UpdateResult })
   @ApiBadRequestResponse({
-    description: 'There is no user with this uuid in our database',
+    description: 'There is no user with this UUID in our database',
   })
-  updateUser(@Body() updatedUser: User, @Param() id: string): Observable<UpdateResult | string> {
+  updateUser(@Body() updatedUser: User, @Param() id: string): Observable<UpdateResult> {
     return this.userService.updateUser(updatedUser, id);
   }
 
-  // @UseGuards(AuthGuard())
   @Delete(':id')
   @ApiOperation({ title: 'User deletion' })
   @ApiImplicitParam({ name: 'id', description: `User's UUID`, required: true, type: 'string' })
   @ApiOkResponse({ description: 'Successful operation', type: DeleteResult })
   @ApiBadRequestResponse({
-    description: 'There is no user with this uuid in our database',
+    description: 'There is no user with this UUID in our database',
   })
-  deleteUser(@Param() id): Observable<DeleteResult | string> {
+  deleteUser(@Param() id): Observable<DeleteResult> {
     return this.userService.deleteUser(id);
   }
 }
