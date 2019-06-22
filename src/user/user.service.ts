@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { UserDto } from './dto/user.dto';
+import { switchMap } from 'rxjs/operators';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -59,29 +59,53 @@ export class UserService {
   /**
    * @description Get a specific user by his UUID in the DB
    * @param userId of type string
-   * @returns An observable of a User
+   * @returns An observable of a User or an observable of string if the user doesn't exists
    */
-  getUserById(userId: string): Observable<User> {
-    return this.userRepo.findUserById(userId);
+  getUserById(userId: string): Observable<User | string> {
+    return this.userRepo.findUserById(userId).pipe(
+      switchMap(user => {
+        if (user) {
+          return this.userRepo.findUserById(userId);
+        } else {
+          return of('There is no user with this uuid in our database');
+        }
+      }),
+    );
   }
 
   /**
    * @description Update the user in the DB with his UUID
    * @param updatedUser of type User
    * @param userId of type string
-   * @returns An object describing the changes on DB
+   * @returns An object describing the changes on DB or an observable of string if the user doesn't exists
    */
-  updateUser(updatedUser: User, userId: string): Observable<any> {
-    return this.userRepo.updateUser(userId, updatedUser);
+  updateUser(updatedUser: User, userId: string): Observable<UpdateResult | string> {
+    return this.userRepo.findUserById(userId).pipe(
+      switchMap(user => {
+        if (user) {
+          return this.userRepo.updateUser(userId, updatedUser);
+        } else {
+          return of('There is no user with this uuid in our database');
+        }
+      }),
+    );
   }
 
   /**
    * @description Delete a user in the DB by his UUID
    * @param userId of type string
-   * @returns An object describing the changes on DB
+   * @returns A DeleteResult describing the changes on DB or an observable of string if the user doesn't exists
    */
-  deleteUser(userId: string): Observable<any> {
-    return this.userRepo.deleteUser(userId);
+  deleteUser(userId: string): Observable<DeleteResult | string> {
+    return this.userRepo.findUserById(userId).pipe(
+      switchMap(user => {
+        if (user) {
+          return this.userRepo.deleteUser(userId);
+        } else {
+          return of('There is no user with this uuid in our database');
+        }
+      }),
+    );
   }
 
   /**

@@ -1,8 +1,6 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository, EntityRepository } from 'typeorm';
-import { Observable, from, throwError, of } from 'rxjs';
-import { UserDto } from './dto/user.dto';
+import { Observable, from, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { error } from 'util';
 import { CreateUserDto } from './dto/create-user.dto';

@@ -6,6 +6,7 @@ import { UserDto } from './dto/user.dto';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -16,14 +17,14 @@ export class UserController {
   // @UseGuards(AuthGuard())
   @Get()
   @ApiOperation({ title: 'Get all users' })
-  getAllUsers(): Observable<UserDto[]> {
+  getAllUsers(): Observable<User[]> {
     return this.userService.getAllUsers();
   }
 
   // @UseGuards(AuthGuard())
   @Get(':id')
   @ApiOperation({ title: 'Get of a specific user with his UUID' })
-  getById(@Param() id: string): Observable<UserDto> {
+  getById(@Param() id: string): Observable<User | string> {
     return this.userService.getUserById(id);
   }
 
@@ -36,14 +37,14 @@ export class UserController {
   // @UseGuards(AuthGuard())
   @Patch(':id')
   @ApiOperation({ title: 'User update' })
-  updateUser(@Body() updatedUser: User, @Param() id: string): Observable<string> {
+  updateUser(@Body() updatedUser: User, @Param() id: string): Observable<UpdateResult | string> {
     return this.userService.updateUser(updatedUser, id);
   }
 
   // @UseGuards(AuthGuard())
   @Delete(':id')
   @ApiOperation({ title: 'User deletion' })
-  deleteUser(@Param() id): Observable<any> {
+  deleteUser(@Param() id): Observable<DeleteResult | string> {
     return this.userService.deleteUser(id);
   }
 }
