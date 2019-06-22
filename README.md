@@ -33,6 +33,7 @@ Long term features:
 - Map, geolocation and it's share
 - Sending notifications to other users ("I'm at Giluna's do you whant a babycinno?")
 - Save of your custom items for faster price adding to the balance
+- Call to others API (drinks api, food, ...)
 - ...
 
 ## Installation
