@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Body,
-  Post,
-  Delete,
-  Patch,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-} from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, Delete, Patch, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { Observable } from 'rxjs';
@@ -19,10 +9,9 @@ import { TransformInterceptor } from '../interceptors/transform.interceptor';
 
 @ApiUseTags('users')
 @Controller('users')
+@UseInterceptors(new TransformInterceptor(UserDto))
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  // TODO: Implement UserDTO for the return to the client instead of a User
 
   // @UseGuards(AuthGuard())
   @Get()
@@ -39,8 +28,6 @@ export class UserController {
   }
 
   @Post()
-  // @UsePipes(new ValidationPipe({ transform: true }))
-  @UseInterceptors(new TransformInterceptor(UserDto))
   @ApiOperation({ title: 'User creation' })
   createUser(@Body() newUser: CreateUserDto): Observable<string | UserDto> {
     return this.userService.createUser(newUser);

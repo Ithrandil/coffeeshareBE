@@ -48,30 +48,6 @@ export class UserService {
     );
   }
 
-  // createUser(newUser: CreateUserDto): Observable<UserDto | string> {
-  //   return this.verifyUserNotExistByEmail(newUser.email).pipe(
-  //     switchMap(doNotExist => {
-  //       if (doNotExist) {
-  //         let merde = this.userRepo.createUser(newUser);
-  //         console.log(merde);
-  //         merde.pipe(
-  //           map(userFromDB => {
-  //             const returnUser: UserDto = {
-  //               id: userFromDB.id,
-  //               firstName: userFromDB.firstName,
-  //               lastName: userFromDB.lastName,
-  //               email: userFromDB.email,
-  //             };
-  //             return of(returnUser);
-  //           }),
-  //         );
-  //       } else {
-  //         return of('This mail is already used');
-  //       }
-  //     }),
-  //   );
-  // }
-
   /**
    * @description Get all users on the DB
    * @returns An observable of an array of Users
@@ -89,22 +65,20 @@ export class UserService {
     return this.userRepo.findUserById(userId);
   }
 
-  // TODO: NEED TO TEST TO UNDERSTAND WHAT COMES BACK WITH TYPEORM AND REMOVE THE ANY TYPE
   /**
    * @description Update the user in the DB with his UUID
    * @param updatedUser of type User
    * @param userId of type string
-   * @returns ???????
+   * @returns An object describing the changes on DB
    */
   updateUser(updatedUser: User, userId: string): Observable<any> {
     return this.userRepo.updateUser(userId, updatedUser);
   }
 
-  // TODO: NEED TO TEST TO UNDERSTAND WHAT COMES BACK WITH TYPEORM AND REMOVE THE ANY TYPE
   /**
    * @description Delete a user in the DB by his UUID
    * @param userId of type string
-   * @returns ????????
+   * @returns An object describing the changes on DB
    */
   deleteUser(userId: string): Observable<any> {
     return this.userRepo.deleteUser(userId);
