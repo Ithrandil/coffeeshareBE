@@ -1,39 +1,49 @@
-import { Controller, Get, Put, Param, Body, Post, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, Delete, Patch, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { Observable } from 'rxjs';
-import { UserDto } from './user.dto';
+import { UserDto } from './dto/user.dto';
+import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { CreateUserDto } from './dto/create-user.dto';
+import { TransformInterceptor } from '../interceptors/transform.interceptor';
 
-@Controller('user')
+@ApiUseTags('users')
+@Controller('users')
+@UseInterceptors(new TransformInterceptor(UserDto))
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-    // @UseGuards(AuthGuard())
-    @Get('all')
-    getAllUsers(): Observable<UserDto[]> {
-        return this.userService.getAllUsers();
-    }
+  // @UseGuards(AuthGuard())
+  @Get()
+  @ApiOperation({ title: 'Get all users' })
+  getAllUsers(): Observable<UserDto[]> {
+    return this.userService.getAllUsers();
+  }
 
-    // @UseGuards(AuthGuard())
-    @Get(':id')
-    getById(@Param() params): Observable<UserDto> {
-        return this.userService.getUserById(params.id);
-    }
+  // @UseGuards(AuthGuard())
+  @Get(':id')
+  @ApiOperation({ title: 'Get of a specific user with his UUID' })
+  getById(@Param() id: string): Observable<UserDto> {
+    return this.userService.getUserById(id);
+  }
 
-    // @UseGuards(AuthGuard())
-    @Put('update/:id')
-    updateUser(@Body() updatedUser: User, @Param() params): string {
-        return this.userService.updateUser(updatedUser, params.id);
-    }
+  @Post()
+  @ApiOperation({ title: 'User creation' })
+  createUser(@Body() newUser: CreateUserDto): Observable<string | UserDto> {
+    return this.userService.createUser(newUser);
+  }
 
-    @Post('create')
-    createUser(@Body() newUser: User): string {
-        return this.userService.createUser(newUser);
-    }
+  // @UseGuards(AuthGuard())
+  @Patch(':id')
+  @ApiOperation({ title: 'User update' })
+  updateUser(@Body() updatedUser: User, @Param() id: string): Observable<string> {
+    return this.userService.updateUser(updatedUser, id);
+  }
 
-    // @UseGuards(AuthGuard())
-    @Delete(':id')
-    deleteUser(@Param() params): string {
-            return this.userService.deleteUser(params.id);
-    }
+  // @UseGuards(AuthGuard())
+  @Delete(':id')
+  @ApiOperation({ title: 'User deletion' })
+  deleteUser(@Param() id): Observable<any> {
+    return this.userService.deleteUser(id);
+  }
 }
