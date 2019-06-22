@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { AppException } from '../errors/app.exception';
 import { ErrorCode } from '../errors/error-code.model';
+import { LoginIdentifiersDto } from './dto/login-identifiers.dto';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService {
@@ -100,6 +102,32 @@ export class UserService {
             HttpStatus.BAD_REQUEST,
             ErrorCode.USER_DOESNT_EXIST,
           );
+        }
+      }),
+    );
+  }
+
+  /**
+   * @description Generate JWT if identifiers are correct
+   * @param identifiers Email and password
+   * @returns A JWT or an error if wrong identifiers
+   */
+  loginUser(identifiers: LoginIdentifiersDto): Observable<any> {
+    return this.findOneByEmail(identifiers.email).pipe(
+      switchMap(userFromDB => {
+        if (userFromDB) {
+          if (userFromDB.password === identifiers.password) {
+            const jwtBearerToken = jwt.sign({}, 'testForJWT', {
+              algorithm: 'HS256',
+              expiresIn: 12000,
+              subject: userFromDB.id,
+            });
+            return of(jwtBearerToken);
+          } else {
+            throw new AppException('Wrong identifiers', HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST);
+          }
+        } else {
+          throw new AppException(`User doesn't exists`, HttpStatus.BAD_REQUEST, ErrorCode.USER_DOESNT_EXIST);
         }
       }),
     );

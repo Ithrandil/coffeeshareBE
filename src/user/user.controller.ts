@@ -7,14 +7,13 @@ import {
   ApiUseTags,
   ApiOperation,
   ApiImplicitParam,
-  ApiResponse,
-  ApiResponseModelProperty,
   ApiOkResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { LoginIdentifiersDto } from './dto/login-identifiers.dto';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -48,6 +47,16 @@ export class UserController {
   })
   createUser(@Body() newUser: CreateUserDto): Observable<UserDto> {
     return this.userService.createUser(newUser);
+  }
+
+  @Post('/auth')
+  @ApiOperation({ title: 'Create JWT for login' })
+  @ApiOkResponse({ description: 'Successful operation, encrypted user on a JWT sent', type: 'JWT' })
+  @ApiBadRequestResponse({
+    description: 'Wrong identifiers',
+  })
+  loginUser(@Body() identifiers: LoginIdentifiersDto): Observable<any> {
+    return this.userService.loginUser(identifiers);
   }
 
   @Patch(':id')
