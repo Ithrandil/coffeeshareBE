@@ -1,4 +1,4 @@
-import { IsString, IsEmail } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Expose, Exclude } from 'class-transformer';
 import { ApiModelProperty } from '@nestjs/swagger';
 
@@ -21,6 +21,5 @@ export class UserDto {
   email: string;
 
   @Exclude()
-  @ApiModelProperty()
   password: string;
 }
