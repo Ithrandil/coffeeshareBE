@@ -22,6 +22,7 @@ Features already implemented:
 Features previsions:
 
 - Security with JWT
+- Unit test with Jest
 - Good code practices, commented code,...
 - Use of environment variables and a dedicated service
 - Using the full possibilities that are implemented in NestJS : custom decorators, pipes (for DTO to Entities for example), interceptors, guards(for security and administration),...
