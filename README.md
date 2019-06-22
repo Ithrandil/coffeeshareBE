@@ -29,7 +29,7 @@ Features previsions:
 
 Long term features:
 
-- Possibility for users to add other uthers to their "friend list", they will have the possibility to share an expense balance page shared to track who must paid the coffee to whom next time. (Yes this is a tricount)
+- Possibility for users to add other users to their "friend list", they will have the possibility to share an expense balance page shared to track who must paid the coffee to whom next time. (Yes this is a tricount)
 - Map, geolocation and it's share
 - Sending notifications to other users ("I'm at Giluna's do you whant a babycinno?")
 - Save of your custom items for faster price adding to the balance
