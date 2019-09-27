@@ -1,4 +1,14 @@
-import { Controller, Get, Param, Body, Post, Delete, Patch, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Body,
+  Post,
+  Delete,
+  Patch,
+  UseInterceptors,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { Observable } from 'rxjs';
@@ -7,14 +17,13 @@ import {
   ApiUseTags,
   ApiOperation,
   ApiImplicitParam,
-  ApiResponse,
-  ApiResponseModelProperty,
   ApiOkResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -23,6 +32,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(AuthGuard())
   @ApiOperation({ title: 'Get all users' })
   @ApiOkResponse({ description: 'Successful operation', type: [UserDto, UserDto] })
   getAllUsers(): Observable<User[]> {
@@ -30,13 +40,14 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard())
   @ApiOperation({ title: 'Get of a specific user with his UUID' })
   @ApiImplicitParam({ name: 'id', description: `User's UUID`, required: true, type: 'string' })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiBadRequestResponse({
     description: 'There is no user with this UUID in our database',
   })
-  getById(@Param() id: string): Observable<User> {
+  getById(@Param() id: string): Observable<UserDto> {
     return this.userService.getUserById(id);
   }
 
@@ -51,6 +62,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard())
   @ApiOperation({ title: 'User update' })
   @ApiImplicitParam({ name: 'id', description: `User's UUID`, required: true, type: 'string' })
   @ApiOkResponse({ description: 'Successful operation', type: UpdateResult })
@@ -62,6 +74,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard())
   @ApiOperation({ title: 'User deletion' })
   @ApiImplicitParam({ name: 'id', description: `User's UUID`, required: true, type: 'string' })
   @ApiOkResponse({ description: 'Successful operation', type: DeleteResult })
