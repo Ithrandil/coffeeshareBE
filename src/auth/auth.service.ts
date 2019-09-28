@@ -5,8 +5,8 @@ import { JwtPayload } from './models/jwt-payload.interface';
 import { Observable, of } from 'rxjs';
 import { LoginIdentifiersDto } from './models/login-identifiers.dto';
 import { switchMap } from 'rxjs/operators';
-import { AppException } from 'dist/src/errors/app.exception';
-import { ErrorCode } from 'src/errors/error-code.model';
+import { AppException } from '../errors/app.exception';
+import { ErrorCode } from '../errors/error-code.model';
 import { User } from '../user/user.entity';
 
 @Injectable()
