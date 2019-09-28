@@ -65,13 +65,13 @@ export class UserService {
   /**
    * @description Get a specific user by his UUID in the DB
    * @param userId of type string
-   * @returns An observable of a User or an observable of string if the user doesn't exists
+   * @returns An observable of a User
    */
   getUserById(userId: string): Observable<User> {
     return this.userRepo.findUserById(userId).pipe(
       switchMap(user => {
         if (user) {
-          return this.userRepo.findUserById(userId);
+          return of(user);
         } else {
           throw new AppException(
             'There is no user with this UUID in our database',
@@ -87,7 +87,7 @@ export class UserService {
    * @description Update the user in the DB with his UUID
    * @param updatedUser of type User
    * @param userId of type string
-   * @returns An object describing the changes on DB or an observable of string if the user doesn't exists
+   * @returns An object describing the changes on DB
    */
   updateUser(updatedUser: User, userId: string): Observable<UpdateResult> {
     return this.userRepo.findUserById(userId).pipe(
@@ -108,7 +108,7 @@ export class UserService {
   /**
    * @description Delete a user in the DB by his UUID
    * @param userId of type string
-   * @returns A DeleteResult describing the changes on DB or an observable of string if the user doesn't exists
+   * @returns A DeleteResult describing the changes on DB
    */
   deleteUser(userId: string): Observable<DeleteResult> {
     return this.userRepo.findUserById(userId).pipe(
