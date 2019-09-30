@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from './user.repository';
-import { User } from 'dist/src/user/user.entity';
 import { of } from 'rxjs';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AppException } from '../errors/app.exception';
 import { ErrorCode } from '../errors/error-code.model';
-import { HttpStatus } from '@nestjs/common';
+import { User } from '../user/user.entity';
 /********************************************************
  *                   Test variables
  *******************************************************/
