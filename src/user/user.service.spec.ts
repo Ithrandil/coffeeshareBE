@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from './user.repository';
-import { User } from 'dist/src/user/user.entity';
 import { of } from 'rxjs';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+
 import { AppException } from '../errors/app.exception';
 import { ErrorCode } from '../errors/error-code.model';
-import { HttpStatus } from '@nestjs/common';
+import { User } from '../user/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserRepository } from './user.repository';
+import { UserService } from './user.service';
+
 /********************************************************
  *                   Test variables
  *******************************************************/
@@ -72,13 +73,13 @@ describe('UserService', () => {
   afterEach(jest.clearAllMocks);
 
   describe('verifyUserNotExistByEmail', () => {
-    it('should call userRepo', () => {
+    it('should call userRepo.findUserByEmail', () => {
       userService.verifyUserNotExistByEmail('mocked@email.fr').subscribe(() => {
         expect(userRepo.findUserByEmail).toHaveBeenCalledWith('mocked@email.fr');
       });
     });
 
-    it('should call userRepo', () => {
+    it('should call userRepo.findUserByEmail', () => {
       userService.verifyUserNotExistByEmail('dont@exist').subscribe(() => {
         expect(userRepo.findUserByEmail).toHaveBeenCalledWith('dont@exist');
       });
@@ -86,14 +87,14 @@ describe('UserService', () => {
   });
 
   describe('createUser', () => {
-    it('should return user and call verifyUserNotExistByEmail', () => {
+    it('should call userService.verifyUserNotExistByEmail', () => {
       jest.spyOn(userService, 'verifyUserNotExistByEmail').mockImplementationOnce(() => of(true));
       userService.createUser(createUserDto).subscribe(() => {
         expect(userService.verifyUserNotExistByEmail).toHaveBeenCalledWith('mocked@email.fr');
       });
     });
 
-    it('should throw an Appexception', () => {
+    it('should throw an Appexception & call userService.verifyUserNotExistByEmail', () => {
       jest.spyOn(userService, 'verifyUserNotExistByEmail').mockImplementationOnce(() => of(false));
       userService.createUser(createUserDto).subscribe(
         () => {},
@@ -108,22 +109,21 @@ describe('UserService', () => {
   });
 
   describe('getAllUsers', () => {
-    it('should return an array of users after calling userRepo', () => {
-      userService.getAllUsers().subscribe(allUsersArray => {
+    it('should call userRepo.findAll', () => {
+      userService.getAllUsers().subscribe(() => {
         expect(userRepo.findAll).toHaveBeenCalled();
-        expect(allUsersArray).toBeInstanceOf(Array);
       });
     });
   });
 
   describe('getUserById', () => {
-    it('should call userRepo and return a user', () => {
+    it('should call userRepo.findUserById', () => {
       userService.getUserById('123456789').subscribe(() => {
         expect(userRepo.findUserById).toHaveBeenCalledWith('123456789');
       });
     });
 
-    it('should throw an AppException', () => {
+    it('should throw an AppException & call userRepo.findUserById', () => {
       userService.getUserById('000000000').subscribe(
         () => {},
         error => {
@@ -137,14 +137,14 @@ describe('UserService', () => {
   });
 
   describe('updateUser', () => {
-    it('should call userRepo.findUserById & updateUser', () => {
+    it('should call userRepo.findUserById & .updateUser', () => {
       userService.updateUser(user, '123456789').subscribe(() => {
         expect(userRepo.findUserById).toHaveBeenCalledWith('123456789');
         expect(userRepo.updateUser).toHaveBeenCalledWith('123456789', user);
       });
     });
 
-    it('should throw an AppException', () => {
+    it('should throw an AppException, call userRepo.findUserById and not .updateUser', () => {
       userService.updateUser(user, '000000000').subscribe(
         () => {},
         error => {
@@ -166,7 +166,7 @@ describe('UserService', () => {
       });
     });
 
-    it('should throw an AppException', () => {
+    it('should throw an AppException and call userRepo.findUserById and not .deleteUser', () => {
       userService.deleteUser('000000000').subscribe(
         () => {},
         error => {
@@ -187,11 +187,4 @@ describe('UserService', () => {
       });
     });
   });
-
-  // Model UT
-  //   describe('', () => {
-  //       it('', () => {
-  //           expect();
-  //       });
-  //   });
 });
