@@ -10,7 +10,7 @@ The whole purpose of this project is, as a new developper, to expand my knowledg
 
 Use of [Nest](https://github.com/nestjs/nest) framework.
 
-Front-end will be done with Angular for a Typescript full-stack.
+Front-end is done [HERE](https://github.com/Ithrandil/coffeeshareFE) with Angular for a Typescript full-stack.
 
 Features already implemented:
 
