@@ -18,13 +18,17 @@ Features already implemented:
 - NestJs Interceptor using class-transformer transforming a UserEntity (DB) to a UserDto (at this time only password is removed)
 - Use of Swagger for the API
 - Already builted requests example via the postman collection shared on this repo
+- Security with JWT
+- Unit test with Jest (first implementation, not full coverage)
+
+WIP:
+
+- Implementation of "friend entity" : definition of the entity and it's relation with the user one. It's implementation with it's own module, controller, service,...
 
 Features previsions:
-
-- Security with JWT
-- Unit test with Jest
+- CI/CD with docker, Jenkins, ...
 - Good code practices, commented code,...
-- Use of environment variables and a dedicated service
+- Use of environment variables, config files and a dedicated service
 - Using the full possibilities that are implemented in NestJS : custom decorators, pipes (for DTO to Entities for example), interceptors, guards(for security and administration),...
 
 Long term features:
