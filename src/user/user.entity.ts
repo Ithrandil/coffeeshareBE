@@ -1,11 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsEmail } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator/decorator/decorators';
+import { Friend } from 'src/friend/friend.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
   @ApiModelProperty({ uniqueItems: true })
-  @PrimaryGeneratedColumn('uuid', { name: 'id_user' })
+  @PrimaryGeneratedColumn('uuid', { name: 'user_id' })
+  @OneToMany(type => Friend, friend => friend.receiverId)
+  @OneToMany(type => Friend, friend => friend.transmitterId)
   id: string;
 
   @IsString()
@@ -28,4 +31,10 @@ export class User {
   @ApiModelProperty()
   @Column()
   password: string;
+
+  @OneToMany(() => Friend, friend => friend.transmitterId, { eager: true })
+  friendRequested: Friend[];
+
+  @OneToMany(() => Friend, friend => friend.receiverId, { eager: true })
+  friendReceived: Friend[];
 }

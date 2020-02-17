@@ -1,6 +1,7 @@
-import { IsString } from 'class-validator';
-import { Expose, Exclude } from 'class-transformer';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { IsString } from 'class-validator';
+import { Friend } from 'src/friend/friend.entity';
 
 export class UserDto {
   @Expose()
@@ -22,4 +23,12 @@ export class UserDto {
 
   @Exclude()
   password: string;
+
+  @Exclude()
+  @ApiModelProperty()
+  friendReceived: Friend[];
+
+  @Expose()
+  @ApiModelProperty()
+  friendRequested: Friend[];
 }

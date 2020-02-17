@@ -1,13 +1,14 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { User } from './user.entity';
-import { UserRepository } from './user.repository';
-import { CreateUserDto } from './dto/create-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, UpdateResult } from 'typeorm';
+
 import { AppException } from '../errors/app.exception';
 import { ErrorCode } from '../errors/error-code.model';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './user.entity';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
